@@ -1,0 +1,40 @@
+{
+    "id": "archielite/apexa",
+    "name": "Apexa",
+    "namespace": "Theme\\Apexa\\",
+    "author": "Archi ELite",
+    "url": "https://archielite.com",
+    "description": "Apexa - Multi-Purpose Business Consulting Laravel Script",
+    "required_plugins": [],
+    "presets": [
+        {
+            "name": "Accounting Services",
+            "screenshot": "screenshot-accounting-services.png"
+        },
+        {
+            "name": "Consulting",
+            "screenshot": "screenshot-consulting.png"
+        },
+        {
+            "name": "Digital Agency",
+            "screenshot": "screenshot-digital-agency.png"
+        },
+        {
+            "name": "Finance",
+            "screenshot": "screenshot-finance.png"
+        },
+        {
+            "name": "Finance Solutions",
+            "screenshot": "screenshot-finance-solutions.png"
+        },
+        {
+            "name": "Insurance",
+            "screenshot": "screenshot-insurance.png"
+        },
+        {
+            "name": "It Solutions",
+            "screenshot": "screenshot-it-solutions.png"
+        }
+    ]
+    
+}

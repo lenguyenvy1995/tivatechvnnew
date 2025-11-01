@@ -1,0 +1,77 @@
+@use '../utils'as *;
+
+/*=============================
+	00. Section Title
+===============================*/
+.section-title {
+    & .sub-title {
+        display: block;
+        text-transform: uppercase;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: normal;
+        color: var(--tg-theme-secondary);
+        margin-bottom: 12px;
+    }
+
+    & .title {
+        margin-bottom: 0;
+        font-size: 32px;
+
+        @media #{$lg} {
+            font-size: 32px;
+        }
+
+        @media #{$xs} {
+            font-size: 32px;
+        }
+
+        @media #{$sm} {
+            font-size: 30px;
+        }
+
+        & br {
+            @media #{$md} {
+                display: none;
+            }
+        }
+    }
+    &-customner{
+        .title{
+            // font-size: 30px;
+            // font-weight: 500;
+        }
+        .sub-title{
+            font-size: 15px;
+        }
+    }
+    & p {
+        margin-bottom: 0;
+        margin-top: 20px;
+
+        & br {
+            @media #{$xs} {
+                display: none;
+            }
+        }
+    }
+
+    &.white-title {
+        & .title {
+            color: var(--tg-color-white-default);
+        }
+    }
+
+    & .underline {
+        width: 7rem;
+        margin-top: 20px !important;
+        height: 3px;
+        background-image: linear-gradient(to right, var(--tg-theme-primary), #f15c2c); 
+        transition: 0.3s;
+    }
+    &:hover{
+        .underline{
+            width: 10rem;
+        }
+    }
+}
