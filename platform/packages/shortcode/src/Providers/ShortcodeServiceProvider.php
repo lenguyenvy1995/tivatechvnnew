@@ -97,7 +97,7 @@ class ShortcodeServiceProvider extends ServiceProvider
         });
 
         // ✅ Đăng ký custom form field 'customerReviews' để dùng trong shortcode
-        Form::component('customerReviews', ShortcodeCustomerReviewsField::class);
+        Form::component('customerReviews', ShortcodeCustomerReviewsField::class,[]);
 
         $this->app->register(HookServiceProvider::class);
     }
