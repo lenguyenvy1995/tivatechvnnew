@@ -1,4 +1,3 @@
-
 (function ($) {
     "use strict";
 
@@ -660,50 +659,55 @@
             1200: { slidesPerView: 3 },
         },
     });
-    // Vì sao chọn chúng tôi customer phần  website
     document.addEventListener("DOMContentLoaded", function () {
-        const cards = document.querySelectorAll(".card-why-us");
-        const secondCard = cards[1];
+        var cards = document.querySelectorAll(".card--why-us");
+        var secondCard = cards[1];
 
-        secondCard.classList.add("active");
+        if (secondCard) {
+            // ✅ kiểm tra tồn tại
+            secondCard.classList.add("active");
+        }
 
-        cards.forEach((card) => {
-            card.addEventListener("mouseenter", () => {
-                cards.forEach((c) => c.classList.remove("active"));
+        cards.forEach(function (card) {
+            card.addEventListener("mouseenter", function () {
+                cards.forEach(function (c) {
+                    c.classList.remove("active");
+                });
             });
 
-            card.addEventListener("mouseleave", () => {
-                const isAnyHovered = Array.from(cards).some((c) =>
-                    c.matches(":hover"),
-                );
-                if (!isAnyHovered) {
+            card.addEventListener("mouseleave", function () {
+                var isAnyHovered = Array.from(cards).some(function (c) {
+                    return c.matches(":hover");
+                });
+                if (!isAnyHovered && secondCard) {
                     secondCard.classList.add("active");
                 }
             });
         });
     });
 
-    // Js  cuả  quy trình làm việc tại Tivatech
     document.addEventListener("DOMContentLoaded", function () {
-        const modalEl = document.getElementById("stepModal");
         const modalBody = document.getElementById("stepModalBody");
 
-        // Click nút -> nạp content tương ứng
-        document
-            .querySelectorAll('[data-bs-target="#stepModal"]')
-            .forEach((btn) => {
-                btn.addEventListener("click", function () {
-                    const stepId = this.getAttribute("data-step-id"); // "step-0"
-                    const src = document.getElementById("content-" + stepId); // "content-step-0"
-                    modalBody.innerHTML = src
-                        ? src.innerHTML
-                        : "<p>Không có nội dung.</p>";
-                });
-            });
+        // Bắt click mở modal (delegation)
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest('[data-bs-target="#stepModal"]'); // nếu dùng BS4: đổi sang [data-target="#stepModal"]
+            if (!btn) return;
 
-        // Dọn nội dung khi đóng modal
-        modalEl.addEventListener("hidden.bs.modal", () => {
-            modalBody.innerHTML = "";
+            const stepId = btn.getAttribute("data-step-id"); // "step-0"
+            const src = document.getElementById("content-" + stepId); // "content-step-0"
+            if (modalBody) {
+                modalBody.innerHTML = src
+                    ? src.innerHTML
+                    : "<p>Không có nội dung.</p>";
+            }
+        });
+
+        // Dọn nội dung khi modal đóng (delegation theo sự kiện Bootstrap)
+        document.addEventListener("hidden.bs.modal", function (e) {
+            if (e.target && e.target.id === "stepModal" && modalBody) {
+                modalBody.innerHTML = "";
+            }
         });
     });
     document
@@ -910,10 +914,9 @@
         swiper.init();
     });
 
-  
     document.addEventListener("DOMContentLoaded", function () {
         const gallery = document.getElementById("tiva-customer-reviews");
-    
+
         if (gallery && window.lightGallery) {
             window.lightGallery(gallery, {
                 selector: ".gallery-item",
@@ -924,7 +927,7 @@
     });
     document.addEventListener("DOMContentLoaded", function () {
         const gallery = document.getElementById("lightgallery");
-    
+
         if (gallery && window.lightGallery) {
             window.lightGallery(gallery, {
                 selector: ".gallery-item",
@@ -936,13 +939,13 @@
     document.addEventListener("DOMContentLoaded", function () {
         const container = document.getElementById("tiva-review-grid");
         if (!container) return;
-    
+
         const items = Array.from(container.querySelectorAll(".review-item"));
         const totalItems = items.length;
-    
+
         let columns = 2; // default mobile
         const screenWidth = window.innerWidth;
-    
+
         if (screenWidth >= 1200) {
             columns = 5;
         } else if (screenWidth >= 992) {
@@ -950,34 +953,37 @@
         } else if (screenWidth >= 768) {
             columns = 3;
         }
-    
+
         // Reset container
-        container.innerHTML = '';
-    
+        container.innerHTML = "";
+
         // Tạo columns
         const colEls = [];
         for (let i = 0; i < columns; i++) {
-            const col = document.createElement('div');
-            col.classList.add('review-col', i % 2 === 0 ? 'scroll-up' : 'scroll-down');
+            const col = document.createElement("div");
+            col.classList.add(
+                "review-col",
+                i % 2 === 0 ? "scroll-up" : "scroll-down",
+            );
             container.appendChild(col);
             colEls.push(col);
         }
-    
+
         // Gán từng ảnh vào cột tương ứng
         items.forEach((item, index) => {
             colEls[index % columns].appendChild(item);
         });
-    
+
         // 🔥 Nhân đôi nội dung mỗi cột để loop mượt
-        colEls.forEach(col => {
+        colEls.forEach((col) => {
             const clone = col.innerHTML;
             col.innerHTML += clone;
         });
-    
+
         // LightGallery
         if (window.lightGallery) {
             window.lightGallery(container, {
-                selector: '.gallery-item',
+                selector: ".gallery-item",
                 plugins: [lgThumbnail, lgZoom],
                 speed: 500,
             });
