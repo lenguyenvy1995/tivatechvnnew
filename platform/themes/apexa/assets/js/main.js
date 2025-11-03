@@ -699,7 +699,7 @@
             if (modalBody) {
                 modalBody.innerHTML = src
                     ? src.innerHTML
-                    : "<p>Không có nội dung.</p>";
+                    : "<p>Không có nội dung hello.</p>";
             }
         });
 
