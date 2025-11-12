@@ -699,7 +699,7 @@
             if (modalBody) {
                 modalBody.innerHTML = src
                     ? src.innerHTML
-                    : "<p>Không có nội dung hello.</p>";
+                    : "<p>Không có nội dung .</p>";
             }
         });
 
@@ -794,6 +794,7 @@
             observer.observe(el);
         });
     // Dành riêng cho dự án website đã thực hiện tại tivatech
+
     document.querySelectorAll(".tiva-projec-swiper").forEach(function (el) {
         const swiper = new Swiper(el, {
             loop: false,
@@ -810,7 +811,6 @@
                 clickable: true,
             },
             navigation: {
-                // 🔥 thêm navigation
                 nextEl: el.querySelector(".swiper-button-next"),
                 prevEl: el.querySelector(".swiper-button-prev"),
             },
@@ -818,69 +818,89 @@
             grabCursor: true,
             watchSlidesProgress: true,
         });
+    
         // ---- PAN SETUP ----
         const SPEED = 250; // px/s → nhanh
+    
         function computePan(img, wrap) {
             const containerH = wrap.clientHeight;
             const w = wrap.clientWidth;
-
+    
             const naturalW = img.naturalWidth || w;
             const naturalH = img.naturalHeight || containerH;
             const displayedH = Math.round(w * (naturalH / naturalW));
-
+    
             const overflow = displayedH - containerH;
             const panTo = overflow > 0 ? -overflow : 0;
-
+    
             img.style.setProperty("--pan-to", panTo + "px");
             const dur = Math.max(1.2, Math.min(8, Math.abs(panTo) / SPEED));
             img.style.setProperty("--pan-duration", dur + "s");
         }
-
+    
         function setupPans() {
             el.querySelectorAll(".tiva-project-icon").forEach((wrap) => {
                 const img = wrap.querySelector("img");
                 if (!img) return;
+    
                 const run = () => computePan(img, wrap);
-                img.complete ? run() : img.addEventListener("load", run);
+    
+                // 🔥 Chờ ảnh lazyload hoàn tất
+                if (img.classList.contains("loaded") && img.naturalWidth > 0) {
+                    run();
+                } else {
+                    img.addEventListener("load", run, { once: true });
+    
+                    // Bắt lazyload class thay đổi
+                    const obs = new MutationObserver(() => {
+                        if (img.classList.contains("loaded")) {
+                            run();
+                            obs.disconnect();
+                        }
+                    });
+                    obs.observe(img, { attributes: true, attributeFilter: ["class"] });
+                }
+    
+                // 🔁 fallback: nếu lazyload quá chậm → re-run sau 1s
+                setTimeout(run, 1000);
+    
+                // 🔁 khi resize browser
                 window.addEventListener("resize", run);
             });
         }
-        setupPans();
-
+    
         // ---- Hover ----
         el.querySelectorAll(".tiva-project-item").forEach((item) => {
             const img = item.querySelector("img");
-
+    
             item.addEventListener("mouseenter", () => {
                 if (!img) return;
                 img.classList.add("pan");
                 item.classList.add("active");
             });
-
+    
             item.addEventListener("mouseleave", () => {
                 if (!img) return;
                 img.classList.remove("pan");
                 item.classList.remove("active");
             });
         });
-
+    
         // ---- Click ----
         el.querySelectorAll(".swiper-slide").forEach((slide) => {
             slide.addEventListener("click", () => {
                 const index = Array.from(swiper.slides).indexOf(slide);
                 if (index < 0) return;
-
+    
                 swiper.slideTo(index, 400); // nhảy vào giữa
-
+    
                 // reset cũ
-                el.querySelectorAll(".tiva-project-item.active").forEach(
-                    (item) => {
-                        item.classList.remove("active");
-                        const img = item.querySelector("img");
-                        if (img) img.classList.remove("pan");
-                    },
-                );
-
+                el.querySelectorAll(".tiva-project-item.active").forEach((item) => {
+                    item.classList.remove("active");
+                    const img = item.querySelector("img");
+                    if (img) img.classList.remove("pan");
+                });
+    
                 // pan ngay khi click
                 const item = slide.querySelector(".tiva-project-item");
                 const img = slide.querySelector(".tiva-project-icon img");
@@ -890,7 +910,7 @@
                 }
             });
         });
-
+    
         // ---- Khi slide đổi ----
         swiper.on("slideChangeTransitionStart", () => {
             el.querySelectorAll(".tiva-project-item.active").forEach((item) => {
@@ -899,7 +919,7 @@
                 if (img) img.classList.remove("pan");
             });
         });
-
+    
         // ---- Khi khởi tạo: pan luôn item 3 ----
         swiper.on("init", () => {
             const activeSlide = swiper.slides[swiper.activeIndex];
@@ -909,11 +929,16 @@
                 img.classList.add("pan");
                 item.classList.add("active");
             }
+    
+            // ✅ chạy setupPans sau khi swiper render lần đầu
+            setupPans();
         });
-
+    
         swiper.init();
+    
+        // ✅ đảm bảo setupPans chạy lại sau khi mọi ảnh lazyload hoàn tất
+        window.addEventListener("load", setupPans);
     });
-
     document.addEventListener("DOMContentLoaded", function () {
         const gallery = document.getElementById("tiva-customer-reviews");
 
